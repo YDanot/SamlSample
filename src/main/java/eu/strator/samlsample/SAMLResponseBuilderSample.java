@@ -122,7 +122,9 @@ public class SAMLResponseBuilderSample {
     private void logResponse(Response response) throws MarshallingException {
         ResponseMarshaller marshaller = new ResponseMarshaller();
         Element plaintextElement = marshaller.marshall(response);
+        System.out.println("##############################SAMLResponse########################################");
         System.out.println(XMLHelper.nodeToString(plaintextElement));
+        System.out.println("##################################################################################");
     }
 
     private Issuer buildIssuer(XMLObjectBuilderFactory builderFactory) {
