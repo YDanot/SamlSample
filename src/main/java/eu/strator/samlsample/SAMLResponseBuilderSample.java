@@ -16,6 +16,7 @@ import org.opensaml.saml2.core.Status;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml2.core.impl.ResponseMarshaller;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilderFactory;
@@ -83,9 +84,14 @@ public class SAMLResponseBuilderSample {
         nameId.setFormat(NameID.UNSPECIFIED);
 
         // Create the Subject
+        SAMLObjectBuilder subjectConfirmationDataBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
+        SubjectConfirmationData subjectConfirmationData = (SubjectConfirmationData) subjectConfirmationDataBuilder.buildObject();
+        subjectConfirmationData.setRecipient("http://testcfs.logista.com/adfs/services/trust");
+
         SAMLObjectBuilder subjectConfirmationBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmation.DEFAULT_ELEMENT_NAME);
         SubjectConfirmation subjectConfirmation = (SubjectConfirmation) subjectConfirmationBuilder.buildObject();
         subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
+        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
 
         SAMLObjectBuilder subjectBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Subject.DEFAULT_ELEMENT_NAME);
         Subject subject = (Subject) subjectBuilder.buildObject();
