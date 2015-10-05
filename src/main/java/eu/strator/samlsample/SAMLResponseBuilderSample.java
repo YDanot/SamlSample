@@ -15,6 +15,7 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Status;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml2.core.impl.ResponseMarshaller;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilderFactory;
@@ -82,10 +83,14 @@ public class SAMLResponseBuilderSample {
         nameId.setFormat(NameID.UNSPECIFIED);
 
         // Create the Subject
+        SAMLObjectBuilder subjectConfirmationBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmation.DEFAULT_ELEMENT_NAME);
+        SubjectConfirmation subjectConfirmation = (SubjectConfirmation) subjectConfirmationBuilder.buildObject();
+        subjectConfirmation.setMethod(SubjectConfirmation.METHOD_SENDER_VOUCHES);
+
         SAMLObjectBuilder subjectBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Subject.DEFAULT_ELEMENT_NAME);
         Subject subject = (Subject) subjectBuilder.buildObject();
-
         subject.setNameID(nameId);
+        subject.getSubjectConfirmations().add(subjectConfirmation);
 
         SAMLObjectBuilder statementBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AttributeStatement.DEFAULT_ELEMENT_NAME);
         AttributeStatement statement = (AttributeStatement)statementBuilder.buildObject();

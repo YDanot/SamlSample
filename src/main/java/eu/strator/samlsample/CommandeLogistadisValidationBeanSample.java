@@ -40,6 +40,7 @@ public class CommandeLogistadisValidationBeanSample {
 
     @PostConstruct
     private void initBean() throws Exception {
+        //Test
         initSamlReponseEncoded();
         initRelayState();
     }
