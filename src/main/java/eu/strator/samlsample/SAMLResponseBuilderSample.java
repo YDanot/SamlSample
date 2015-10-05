@@ -85,7 +85,7 @@ public class SAMLResponseBuilderSample {
         // Create the Subject
         SAMLObjectBuilder subjectConfirmationBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmation.DEFAULT_ELEMENT_NAME);
         SubjectConfirmation subjectConfirmation = (SubjectConfirmation) subjectConfirmationBuilder.buildObject();
-        subjectConfirmation.setMethod(SubjectConfirmation.METHOD_SENDER_VOUCHES);
+        subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
 
         SAMLObjectBuilder subjectBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Subject.DEFAULT_ELEMENT_NAME);
         Subject subject = (Subject) subjectBuilder.buildObject();
