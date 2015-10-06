@@ -20,7 +20,7 @@ public class SamlTestController {
         return "        <form id=\"Idp-Initated\" method=\"post\" action=\"https://testcfs.logista.com/adfs/ls/idpinitiatedsignon.aspx\">\n" +
                 "            <input type=\"hidden\" name=\"SAMLResponse\"\n" +
                 "                   value=\""+commandeLogistadisValidationBean.getSamlResponseEncoded()+"\"/>\n" +
-                "            <input type=\"hidden\" name=\"relaystate\"\n" +
+                "            <input type=\"hidden\" name=\"RelayState\"\n" +
                 "                   value=\""+commandeLogistadisValidationBean.getSamlRelayStateEncoded()+"\"/>\n" +
                 "            <input type=\"submit\" value=\"Submit\"/>\n" +
                 "        </form>";
