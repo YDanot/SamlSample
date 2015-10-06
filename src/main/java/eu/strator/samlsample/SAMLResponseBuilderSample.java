@@ -1,6 +1,7 @@
 package eu.strator.samlsample;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObjectBuilder;
@@ -87,6 +88,7 @@ public class SAMLResponseBuilderSample {
         SAMLObjectBuilder subjectConfirmationDataBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
         SubjectConfirmationData subjectConfirmationData = (SubjectConfirmationData) subjectConfirmationDataBuilder.buildObject();
         subjectConfirmationData.setRecipient("http://testcfs.logista.com/adfs/services/trust");
+        subjectConfirmationData.setNotOnOrAfter((new LocalDateTime()).plusHours(1).toDateTime());
 
         SAMLObjectBuilder subjectConfirmationBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmation.DEFAULT_ELEMENT_NAME);
         SubjectConfirmation subjectConfirmation = (SubjectConfirmation) subjectConfirmationBuilder.buildObject();
