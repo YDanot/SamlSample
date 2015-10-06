@@ -35,7 +35,7 @@ public class SAMLResponseBuilderSample {
 
     private String issuerValue = "http://idp.test.tpos.logista.com";
 
-    private String destination="https://testcfs.logista.com/adfs/ls/";
+    private String destination="http://testcfs.logista.com/adfs/services/trust";
 
     public Response buildResponse() {
 
@@ -87,7 +87,7 @@ public class SAMLResponseBuilderSample {
         // Create the Subject
         SAMLObjectBuilder subjectConfirmationDataBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
         SubjectConfirmationData subjectConfirmationData = (SubjectConfirmationData) subjectConfirmationDataBuilder.buildObject();
-        subjectConfirmationData.setRecipient("AssertionConsumerService");
+        subjectConfirmationData.setRecipient("https://testcfs.logista.com/adfs/ls/");
         subjectConfirmationData.setNotOnOrAfter((new LocalDateTime()).plusHours(1).toDateTime());
 
         SAMLObjectBuilder subjectConfirmationBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmation.DEFAULT_ELEMENT_NAME);
@@ -118,7 +118,7 @@ public class SAMLResponseBuilderSample {
         SAMLObjectBuilder assertionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Assertion.DEFAULT_ELEMENT_NAME);
         Assertion assertion = (Assertion) assertionBuilder.buildObject();
         assertion.setIssuer(buildIssuer(builderFactory));
-        assertion.setIssueInstant(new DateTime());
+        assertion.setIssueInstant(new LocalDateTime().toDateTime());
         assertion.setVersion(SAMLVersion.VERSION_20);
         assertion.setSubject(subject);
         assertion.getAttributeStatements().add(statement);

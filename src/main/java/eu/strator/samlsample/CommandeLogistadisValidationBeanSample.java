@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 
 
 @Component
-@Scope(value=BeanDefinition.SCOPE_SINGLETON)
+@Scope(value=BeanDefinition.SCOPE_PROTOTYPE)
 public class CommandeLogistadisValidationBeanSample {
     
     private String samlResponseEncoded;

@@ -1,16 +1,18 @@
 package eu.strator.samlsample;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/*")
+@Scope(value= BeanDefinition.SCOPE_PROTOTYPE)
 public class SamlTestController {
 
-    @Autowired
-    private CommandeLogistadisValidationBeanSample commandeLogistadisValidationBean;
+    @Autowired private CommandeLogistadisValidationBeanSample commandeLogistadisValidationBean;
 
     @RequestMapping("")
     @ResponseBody
