@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<saml2p:Response Destination="http://testcfs.logista.com/adfs/services/trust" ID="_5a420d45-7aee-4655-8f89-b1cad771e132"
-                 IssueInstant="2015-10-06T08:16:10.773Z" Version="2.0"
+<saml2p:Response Destination="https://testcfs.logista.com/adfs/ls/" ID="_459e5db1-d05e-4552-958b-4a11dfd5c5c9"
+                 IssueInstant="2015-10-06T09:05:52.019Z" Version="2.0"
                  xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol">
     <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">http://idp.test.tpos.logista.com</saml2:Issuer>
     <saml2p:Status>
         <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
     </saml2p:Status>
-    <saml2:Assertion ID="_d3701811-e180-4948-87ea-9197fc7cb41f" IssueInstant="2015-10-06T08:16:10.773Z" Version="2.0"
+    <saml2:Assertion ID="_9c181a75-800f-4b0d-b198-b7b2ac37b55e" IssueInstant="2015-10-06T09:05:52.019Z" Version="2.0"
                      xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">
         <saml2:Issuer>http://idp.test.tpos.logista.com</saml2:Issuer>
         <saml2:Subject>
             <saml2:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">E0000019512</saml2:NameID>
             <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-                <saml2:SubjectConfirmationData NotOnOrAfter="2015-10-06T09:16:10.773Z"
-                                               Recipient="http://testcfs.logista.com/adfs/services/trust"/>
+                <saml2:SubjectConfirmationData NotOnOrAfter="2015-10-06T10:05:52.019Z"
+                                               Recipient="AssertionConsumerService"/>
             </saml2:SubjectConfirmation>
         </saml2:Subject>
         <saml2:AttributeStatement>
