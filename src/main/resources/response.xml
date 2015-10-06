@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<saml2p:Response Destination="http://testcfs.logista.com/adfs/services/trust" ID="_33549b4b-edcc-4ce3-bc42-50df40c7f969"
-                 IssueInstant="2015-10-06T09:25:58.216Z" Version="2.0"
+<saml2p:Response Destination="http://testcfs.logista.com/adfs/services/trust" ID="_14f43cf3-b59d-467c-aa75-0a6e79a565a8"
+                 IssueInstant="2015-10-06T14:28:25.267Z" Version="2.0"
                  xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol">
     <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">http://idp.test.tpos.logista.com</saml2:Issuer>
     <saml2p:Status>
         <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
     </saml2p:Status>
-    <saml2:Assertion ID="_3d3c02bf-e8f1-42fe-a91e-89ac9d09dbc0" IssueInstant="2015-10-06T09:25:58.216Z" Version="2.0"
+    <saml2:Assertion ID="_7b50f522-ee41-4262-9560-047c54499d59" IssueInstant="2015-10-06T14:28:25.262Z" Version="2.0"
                      xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">
         <saml2:Issuer>http://idp.test.tpos.logista.com</saml2:Issuer>
         <saml2:Subject>
             <saml2:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">E0000019512</saml2:NameID>
             <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-                <saml2:SubjectConfirmationData NotOnOrAfter="2015-10-06T10:25:58.216Z"
+                <saml2:SubjectConfirmationData NotOnOrAfter="2015-10-06T15:28:25.211Z"
                                                Recipient="https://testcfs.logista.com/adfs/ls/"/>
             </saml2:SubjectConfirmation>
         </saml2:Subject>
+        <saml2:Conditions NotOnOrAfter="2015-10-06T15:28:25.253Z">
+            <saml2:AudienceRestriction>
+                <saml2:Audience>https://testcfs.logista.com</saml2:Audience>
+            </saml2:AudienceRestriction>
+        </saml2:Conditions>
         <saml2:AttributeStatement>
             <saml2:Attribute Name="uid" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
                 <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema"

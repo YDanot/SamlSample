@@ -10,6 +10,9 @@ import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.AttributeValue;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
@@ -18,6 +21,7 @@ import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml2.core.impl.AudienceRestrictionBuilder;
 import org.opensaml.saml2.core.impl.ResponseMarshaller;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilderFactory;
@@ -100,6 +104,20 @@ public class SAMLResponseBuilderSample {
         subject.setNameID(nameId);
         subject.getSubjectConfirmations().add(subjectConfirmation);
 
+        SAMLObjectBuilder conditionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Conditions.DEFAULT_ELEMENT_NAME);
+        Conditions conditions = (Conditions) conditionBuilder.buildObject();
+
+        SAMLObjectBuilder audienceRestrictionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        AudienceRestriction audienceRestriction = (AudienceRestriction) audienceRestrictionBuilder.buildObject();
+
+        SAMLObjectBuilder audienceBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Audience.DEFAULT_ELEMENT_NAME);
+        Audience audience = (Audience) audienceBuilder.buildObject();
+        audience.setAudienceURI("https://testcfs.logista.com");
+
+        audienceRestriction.getAudiences().add(audience);
+        conditions.setNotOnOrAfter((new LocalDateTime()).plusHours(1).toDateTime());
+        conditions.getAudienceRestrictions().add(audienceRestriction);
+
         SAMLObjectBuilder statementBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AttributeStatement.DEFAULT_ELEMENT_NAME);
         AttributeStatement statement = (AttributeStatement)statementBuilder.buildObject();
         SAMLObjectBuilder attributeBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
@@ -121,6 +139,7 @@ public class SAMLResponseBuilderSample {
         assertion.setIssueInstant(new LocalDateTime().toDateTime());
         assertion.setVersion(SAMLVersion.VERSION_20);
         assertion.setSubject(subject);
+        assertion.setConditions(conditions);
         assertion.getAttributeStatements().add(statement);
         assertion.setID("_" + UUID.randomUUID().toString());
 
