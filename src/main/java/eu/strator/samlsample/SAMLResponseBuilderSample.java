@@ -12,6 +12,9 @@ import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.AuthnContext;
+import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
@@ -132,6 +135,20 @@ public class SAMLResponseBuilderSample {
 
         statement.getAttributes().add(attribute);
 
+        SAMLObjectBuilder authnBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AuthnStatement.DEFAULT_ELEMENT_NAME);
+        AuthnStatement authnStatement = (AuthnStatement) authnBuilder.buildObject();
+        authnStatement.setAuthnInstant(new LocalDateTime().toDateTime());
+
+        SAMLObjectBuilder authnContextBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AuthnContext.DEFAULT_ELEMENT_NAME);
+        AuthnContext authnContext = (AuthnContext) authnContextBuilder.buildObject();
+
+        SAMLObjectBuilder authnContextClassRefBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+        AuthnContextClassRef authnContextClassRef = (AuthnContextClassRef) authnContextClassRefBuilder.buildObject();
+        authnContextClassRef.setAuthnContextClassRef(AuthnContext.PPT_AUTHN_CTX);
+
+        authnContext.setAuthnContextClassRef(authnContextClassRef);
+        authnStatement.setAuthnContext(authnContext);
+
         // Create the assertion
         SAMLObjectBuilder assertionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Assertion.DEFAULT_ELEMENT_NAME);
         Assertion assertion = (Assertion) assertionBuilder.buildObject();
@@ -142,6 +159,7 @@ public class SAMLResponseBuilderSample {
         assertion.setConditions(conditions);
         assertion.getAttributeStatements().add(statement);
         assertion.setID("_" + UUID.randomUUID().toString());
+        assertion.getAuthnStatements().add(authnStatement);
 
         return assertion;
     }

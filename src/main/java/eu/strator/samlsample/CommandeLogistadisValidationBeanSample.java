@@ -47,8 +47,8 @@ public class CommandeLogistadisValidationBeanSample {
 
     private void initRelayState() throws UnsupportedEncodingException {
         String rpidEncoded = URLEncoder.encode(rpid, "UTF-8");
-        String finalUrlEncoded = URLEncoder.encode(finalUrl, "UTF-8");
-        samlRelayStateEncoded = "RPID=" + rpidEncoded + "&RelayState=" + finalUrlEncoded;
+        String finalUrlEncoded = URLEncoder.encode("rm=0&id=passive&ru=%2f%3fhello", "UTF-8");
+        samlRelayStateEncoded = "RPID=" + rpidEncoded + "&wctx=" + finalUrlEncoded;
     }
 
     private void initSamlReponseEncoded() throws Exception {
