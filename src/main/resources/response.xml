@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<saml2p:Response Destination="http://testcfs.logista.com/adfs/services/trust" ID="_239f06bb-0ee3-46f9-9eba-89044520545c"
-                 IssueInstant="2015-10-07T08:24:51.581Z" Version="2.0"
+<saml2p:Response Destination="http://testcfs.logista.com/adfs/services/trust" ID="_cc6bddf6-cc1e-41ca-95cc-da6774d2dc39"
+                 IssueInstant="2015-10-07T11:18:37.549Z" Version="2.0"
                  xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol">
     <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">http://idp.test.tpos.logista.com</saml2:Issuer>
     <saml2p:Status>
         <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
     </saml2p:Status>
-    <saml2:Assertion ID="_643ace62-5612-4742-8cae-2c40f08a585c" IssueInstant="2015-10-07T08:24:51.581Z" Version="2.0"
+    <saml2:Assertion ID="_b3f13432-2479-4d8e-b77a-5dfaa7951ee1" IssueInstant="2015-10-07T11:18:37.550Z" Version="2.0"
                      xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">
         <saml2:Issuer>http://idp.test.tpos.logista.com</saml2:Issuer>
         <saml2:Subject>
             <saml2:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">E0000019512</saml2:NameID>
             <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-                <saml2:SubjectConfirmationData NotOnOrAfter="2015-10-07T09:24:51.580Z"
+                <saml2:SubjectConfirmationData NotOnOrAfter="2015-10-07T12:18:37.550Z"
                                                Recipient="https://testcfs.logista.com/adfs/ls/"/>
             </saml2:SubjectConfirmation>
         </saml2:Subject>
-        <saml2:Conditions NotOnOrAfter="2015-10-07T09:24:51.580Z">
+        <saml2:Conditions NotOnOrAfter="2015-10-07T12:18:37.550Z">
             <saml2:AudienceRestriction>
                 <saml2:Audience>https://testcfs.logista.com</saml2:Audience>
             </saml2:AudienceRestriction>
@@ -29,7 +29,7 @@
                 </saml2:AttributeValue>
             </saml2:Attribute>
         </saml2:AttributeStatement>
-        <saml2:AuthnStatement AuthnInstant="2015-10-07T08:24:51.581Z">
+        <saml2:AuthnStatement AuthnInstant="2015-10-07T11:18:37.550Z">
             <saml2:AuthnContext>
                 <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
                 </saml2:AuthnContextClassRef>

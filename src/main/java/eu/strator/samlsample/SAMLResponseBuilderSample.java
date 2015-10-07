@@ -24,10 +24,8 @@ import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.core.impl.AudienceRestrictionBuilder;
 import org.opensaml.saml2.core.impl.ResponseMarshaller;
 import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.schema.XSString;
 import org.opensaml.xml.schema.impl.XSStringBuilder;
@@ -35,152 +33,157 @@ import org.opensaml.xml.util.XMLHelper;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 
+import javax.annotation.PostConstruct;
+import javax.xml.namespace.QName;
 import java.util.UUID;
 
 @Component
 public class SAMLResponseBuilderSample {
 
     private String issuerValue = "http://idp.test.tpos.logista.com";
+    private String destination = "http://testcfs.logista.com/adfs/services/trust";
 
-    private String destination="http://testcfs.logista.com/adfs/services/trust";
-
-    public Response buildResponse() {
-
-        Response response = null;
+    @PostConstruct
+    private void init() {
         try {
             DefaultBootstrap.bootstrap();
-
-            XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-
-            Assertion assertion = buildAssertion(builderFactory);
-
-            SAMLObjectBuilder statusCodeBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(StatusCode.DEFAULT_ELEMENT_NAME);
-            StatusCode statusCode = (StatusCode) statusCodeBuilder.buildObject();
-            statusCode.setValue(StatusCode.SUCCESS_URI);
-
-            SAMLObjectBuilder statusBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Status.DEFAULT_ELEMENT_NAME);
-            Status status = (Status) statusBuilder.buildObject();
-            status.setStatusCode(statusCode);
-
-            // Create the Response
-            SAMLObjectBuilder reponseBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Response.DEFAULT_ELEMENT_NAME);
-            response = (Response)reponseBuilder.buildObject();
-            response.getAssertions().add(assertion);
-            response.setDestination(destination);
-            response.setIssuer(buildIssuer(builderFactory));
-            response.setIssueInstant(new DateTime());
-            response.setStatus(status);
-
-            String newID = "_" + UUID.randomUUID().toString();
-            response.setID(newID);
-            logResponse(response);
-
         } catch (ConfigurationException e) {
             e.printStackTrace();
-        } catch (MarshallingException e) {
-            e.printStackTrace();
         }
+    }
+
+    public Response buildResponse() {
+        Response response = getSamlObject(Response.DEFAULT_ELEMENT_NAME, Response.class);
+        response.setID(generateId());
+        response.setDestination(destination);
+        response.setIssueInstant(now());
+        response.setIssuer(buildIssuer());
+        response.getAssertions().add(buildAssertion());
+        response.setStatus(buildStatusElement());
+        logResponse(response);
+
         return response;
     }
 
-    public Assertion buildAssertion(XMLObjectBuilderFactory builderFactory) throws MarshallingException {
+    private DateTime now() {
+        return new LocalDateTime().toDateTime();
+    }
 
-        // Create the NameIdentifier
-        SAMLObjectBuilder nameIdBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
-        NameID nameId = (NameID) nameIdBuilder.buildObject();
-        nameId.setValue("E0000019512");
-        nameId.setFormat(NameID.UNSPECIFIED);
+    private String generateId() {
+        return "_" + UUID.randomUUID().toString();
+    }
 
-        // Create the Subject
-        SAMLObjectBuilder subjectConfirmationDataBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
-        SubjectConfirmationData subjectConfirmationData = (SubjectConfirmationData) subjectConfirmationDataBuilder.buildObject();
-        subjectConfirmationData.setRecipient("https://testcfs.logista.com/adfs/ls/");
-        subjectConfirmationData.setNotOnOrAfter((new LocalDateTime()).plusHours(1).toDateTime());
+    private Status buildStatusElement() {
+        StatusCode statusCode = getSamlObject(StatusCode.DEFAULT_ELEMENT_NAME, StatusCode.class);
+        statusCode.setValue(StatusCode.SUCCESS_URI);
 
-        SAMLObjectBuilder subjectConfirmationBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(SubjectConfirmation.DEFAULT_ELEMENT_NAME);
-        SubjectConfirmation subjectConfirmation = (SubjectConfirmation) subjectConfirmationBuilder.buildObject();
-        subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
-        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+        Status status = getSamlObject(Status.DEFAULT_ELEMENT_NAME, Status.class);
+        status.setStatusCode(statusCode);
+        return status;
+    }
 
-        SAMLObjectBuilder subjectBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Subject.DEFAULT_ELEMENT_NAME);
-        Subject subject = (Subject) subjectBuilder.buildObject();
-        subject.setNameID(nameId);
-        subject.getSubjectConfirmations().add(subjectConfirmation);
-
-        SAMLObjectBuilder conditionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Conditions.DEFAULT_ELEMENT_NAME);
-        Conditions conditions = (Conditions) conditionBuilder.buildObject();
-
-        SAMLObjectBuilder audienceRestrictionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AudienceRestriction.DEFAULT_ELEMENT_NAME);
-        AudienceRestriction audienceRestriction = (AudienceRestriction) audienceRestrictionBuilder.buildObject();
-
-        SAMLObjectBuilder audienceBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Audience.DEFAULT_ELEMENT_NAME);
-        Audience audience = (Audience) audienceBuilder.buildObject();
-        audience.setAudienceURI("https://testcfs.logista.com");
-
-        audienceRestriction.getAudiences().add(audience);
-        conditions.setNotOnOrAfter((new LocalDateTime()).plusHours(1).toDateTime());
-        conditions.getAudienceRestrictions().add(audienceRestriction);
-
-        SAMLObjectBuilder statementBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AttributeStatement.DEFAULT_ELEMENT_NAME);
-        AttributeStatement statement = (AttributeStatement)statementBuilder.buildObject();
-        SAMLObjectBuilder attributeBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Attribute.DEFAULT_ELEMENT_NAME);
-        Attribute attribute = (Attribute) attributeBuilder.buildObject();
-        attribute.setName("uid");
-        attribute.setNameFormat(Attribute.BASIC);
-
-        XSStringBuilder stringBuilder = (XSStringBuilder) builderFactory.getBuilder(XSString.TYPE_NAME);
-        XSString attributeValue = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
-        attributeValue.setValue("E0000019512");
-        attribute.getAttributeValues().add(attributeValue);
-
-        statement.getAttributes().add(attribute);
-
-        SAMLObjectBuilder authnBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AuthnStatement.DEFAULT_ELEMENT_NAME);
-        AuthnStatement authnStatement = (AuthnStatement) authnBuilder.buildObject();
-        authnStatement.setAuthnInstant(new LocalDateTime().toDateTime());
-
-        SAMLObjectBuilder authnContextBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AuthnContext.DEFAULT_ELEMENT_NAME);
-        AuthnContext authnContext = (AuthnContext) authnContextBuilder.buildObject();
-
-        SAMLObjectBuilder authnContextClassRefBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-        AuthnContextClassRef authnContextClassRef = (AuthnContextClassRef) authnContextClassRefBuilder.buildObject();
-        authnContextClassRef.setAuthnContextClassRef(AuthnContext.PPT_AUTHN_CTX);
-
-        authnContext.setAuthnContextClassRef(authnContextClassRef);
-        authnStatement.setAuthnContext(authnContext);
-
-        // Create the assertion
-        SAMLObjectBuilder assertionBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Assertion.DEFAULT_ELEMENT_NAME);
-        Assertion assertion = (Assertion) assertionBuilder.buildObject();
-        assertion.setIssuer(buildIssuer(builderFactory));
-        assertion.setIssueInstant(new LocalDateTime().toDateTime());
+    private Assertion buildAssertion() {
+        Assertion assertion = getSamlObject(Assertion.DEFAULT_ELEMENT_NAME, Assertion.class);
+        assertion.setID(generateId());
         assertion.setVersion(SAMLVersion.VERSION_20);
-        assertion.setSubject(subject);
-        assertion.setConditions(conditions);
-        assertion.getAttributeStatements().add(statement);
-        assertion.setID("_" + UUID.randomUUID().toString());
-        assertion.getAuthnStatements().add(authnStatement);
+        assertion.setIssueInstant(now());
+        assertion.setIssuer(buildIssuer());
+        assertion.setSubject(buildSubjectElement());
+        assertion.setConditions(buildConditionsElement());
+        assertion.getAttributeStatements().add(buildAttributeStatementElement());
+        assertion.getAuthnStatements().add(buildAuthnStatementElement());
 
         return assertion;
     }
 
-    private void logResponse(Response response) throws MarshallingException {
-        ResponseMarshaller marshaller = new ResponseMarshaller();
-        Element plaintextElement = marshaller.marshall(response);
-        System.out.println("##############################SAMLResponse########################################");
-        System.out.println(XMLHelper.nodeToString(plaintextElement));
-        System.out.println("##################################################################################");
+    private AuthnStatement buildAuthnStatementElement() {
+        AuthnContextClassRef authnContextClassRef = getSamlObject(AuthnContextClassRef.DEFAULT_ELEMENT_NAME, AuthnContextClassRef.class);
+        authnContextClassRef.setAuthnContextClassRef(AuthnContext.PPT_AUTHN_CTX);
+
+        AuthnContext authnContext = getSamlObject(AuthnContext.DEFAULT_ELEMENT_NAME, AuthnContext.class);
+        authnContext.setAuthnContextClassRef(authnContextClassRef);
+
+        AuthnStatement authnStatement = getSamlObject(AuthnStatement.DEFAULT_ELEMENT_NAME, AuthnStatement.class);
+        authnStatement.setAuthnInstant(now());
+        authnStatement.setAuthnContext(authnContext);
+
+        return authnStatement;
     }
 
-    private Issuer buildIssuer(XMLObjectBuilderFactory builderFactory) {
-        // Create Issuer
-        SAMLObjectBuilder issuerBuilder = (SAMLObjectBuilder) builderFactory.getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
-        Issuer issuer = (Issuer) issuerBuilder.buildObject();
+    private AttributeStatement buildAttributeStatementElement() {
+        XSStringBuilder stringBuilder = (XSStringBuilder) Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
+        XSString attributeValue = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
+        attributeValue.setValue("E0000019512");
+
+        Attribute attribute = getSamlObject(Attribute.DEFAULT_ELEMENT_NAME, Attribute.class);
+        attribute.setName("uid");
+        attribute.setNameFormat(Attribute.BASIC);
+        attribute.getAttributeValues().add(attributeValue);
+
+        AttributeStatement statement = getSamlObject(AttributeStatement.DEFAULT_ELEMENT_NAME, AttributeStatement.class);
+        statement.getAttributes().add(attribute);
+        return statement;
+    }
+
+    private Conditions buildConditionsElement() {
+        Audience audience = getSamlObject(Audience.DEFAULT_ELEMENT_NAME, Audience.class);
+        audience.setAudienceURI("https://testcfs.logista.com");
+
+        AudienceRestriction audienceRestriction = getSamlObject(AudienceRestriction.DEFAULT_ELEMENT_NAME, AudienceRestriction.class);
+        audienceRestriction.getAudiences().add(audience);
+
+        Conditions conditions = getSamlObject(Conditions.DEFAULT_ELEMENT_NAME, Conditions.class);
+        conditions.setNotOnOrAfter(now().plusHours(1));
+        conditions.getAudienceRestrictions().add(audienceRestriction);
+        return conditions;
+    }
+
+    private Subject buildSubjectElement() {
+        Subject subject = getSamlObject(Subject.DEFAULT_ELEMENT_NAME, Subject.class);
+        subject.setNameID(buildNameIdElement());
+        subject.getSubjectConfirmations().add(buildSubjectConfirmationElement());
+        return subject;
+    }
+
+    private SubjectConfirmation buildSubjectConfirmationElement() {
+        SubjectConfirmation subjectConfirmation = getSamlObject(SubjectConfirmation.DEFAULT_ELEMENT_NAME, SubjectConfirmation.class);
+        subjectConfirmation.setMethod(SubjectConfirmation.METHOD_BEARER);
+        subjectConfirmation.setSubjectConfirmationData(buildSubjectConfirmationDataElement());
+        return subjectConfirmation;
+    }
+
+    private SubjectConfirmationData buildSubjectConfirmationDataElement() {
+        SubjectConfirmationData subjectConfirmationData = getSamlObject(SubjectConfirmationData.DEFAULT_ELEMENT_NAME, SubjectConfirmationData.class);
+        subjectConfirmationData.setRecipient("https://testcfs.logista.com/adfs/ls/");
+        subjectConfirmationData.setNotOnOrAfter(now().plusHours(1));
+        return subjectConfirmationData;
+    }
+
+    private NameID buildNameIdElement() {
+        NameID nameId = getSamlObject(NameID.DEFAULT_ELEMENT_NAME, NameID.class);
+        nameId.setValue("E0000019512");
+        nameId.setFormat(NameID.UNSPECIFIED);
+        return nameId;
+    }
+
+    private Issuer buildIssuer() {
+        Issuer issuer = getSamlObject(Issuer.DEFAULT_ELEMENT_NAME, Issuer.class);
         issuer.setValue(issuerValue);
         return issuer;
     }
 
+    private void logResponse(Response response) {
+        try {
+            ResponseMarshaller marshaller = new ResponseMarshaller();
+            Element plaintextElement = marshaller.marshall(response);
+            System.out.println(XMLHelper.nodeToString(plaintextElement));
+        } catch (MarshallingException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-
+    private <T> T getSamlObject(QName elementName, Class<T> clazz) {
+        SAMLObjectBuilder builder = (SAMLObjectBuilder) Configuration.getBuilderFactory().getBuilder(elementName);
+        return (T) builder.buildObject();
+    }
 }
