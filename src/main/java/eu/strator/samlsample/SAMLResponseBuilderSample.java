@@ -113,7 +113,7 @@ public class SAMLResponseBuilderSample {
     private AttributeStatement buildAttributeStatementElement() {
         XSStringBuilder stringBuilder = (XSStringBuilder) Configuration.getBuilderFactory().getBuilder(XSString.TYPE_NAME);
         XSString attributeValue = stringBuilder.buildObject(AttributeValue.DEFAULT_ELEMENT_NAME, XSString.TYPE_NAME);
-        attributeValue.setValue("E0000019512");
+        attributeValue.setValue("E0000013570");
 
         Attribute attribute = getSamlObject(Attribute.DEFAULT_ELEMENT_NAME, Attribute.class);
         attribute.setName("uid");
@@ -161,7 +161,7 @@ public class SAMLResponseBuilderSample {
 
     private NameID buildNameIdElement() {
         NameID nameId = getSamlObject(NameID.DEFAULT_ELEMENT_NAME, NameID.class);
-        nameId.setValue("E0000019512");
+        nameId.setValue("E0000013570");
         nameId.setFormat(NameID.UNSPECIFIED);
         return nameId;
     }

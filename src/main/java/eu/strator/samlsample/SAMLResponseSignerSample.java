@@ -32,7 +32,6 @@ public class SAMLResponseSignerSample {
     private String keyPath = "classpath:/idp.tpos.logista.com.key";
     private String certificatePath = "classpath:/idp.tpos.logista.com.crt";
 
-
     public Response sign(Response response) throws Exception {
         DefaultBootstrap.bootstrap();
 
@@ -71,7 +70,6 @@ public class SAMLResponseSignerSample {
     }
 
     private PrivateKey getPrivateKey() throws Exception {
-
         Resource pKResource = resourceLoader.getResource(keyPath);
         return EncryptionUtilsSample.getPrivateKeyFromResource(pKResource);
     }

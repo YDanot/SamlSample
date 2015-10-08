@@ -35,8 +35,8 @@ public class CommandeLogistadisValidationBeanSample {
         return samlRelayStateEncoded;
     }
 
-    private String rpid = "https://testcfsAPPclaims.cloudapp.net";
-    private String finalUrl = "https://testcfsappclaims.cloudapp.net/?hello";
+    private String rpid = "https://www.test.logistadis.es/logistastorefront/saml/SSO";
+    private String finalUrl = "/logistastorefront/logista/es/EUR/cart";
 
     @PostConstruct
     private void initBean() throws Exception {
@@ -47,8 +47,8 @@ public class CommandeLogistadisValidationBeanSample {
 
     private void initRelayState() throws UnsupportedEncodingException {
         String rpidEncoded = URLEncoder.encode(rpid, "UTF-8");
-        String finalUrlEncoded = URLEncoder.encode("rm=0&id=passive&ru=%2f%3fhello", "UTF-8");
-        samlRelayStateEncoded = "RPID=" + rpidEncoded + "&wctx=" + finalUrlEncoded;
+        String finalUrlEncoded = URLEncoder.encode(finalUrl, "UTF-8");
+        samlRelayStateEncoded = "RPID=" + rpidEncoded + "&RelayState=" + finalUrlEncoded;
     }
 
     private void initSamlReponseEncoded() throws Exception {
